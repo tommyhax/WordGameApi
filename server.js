@@ -5,7 +5,7 @@ const evaluate = require('./evaluate.js');
 const solutionWords = require('./dict-solutions.js');
 const otherWords = require('./dict-others.js');
 
-const configFile = "config.json";
+const configFile = 'config-server.json';
 
 const validWords = solutionWords.concat(otherWords);
 
@@ -79,7 +79,7 @@ app.get('/play', (req, res) => {
   });
 });
 
-fs.readFile('config.json', 'utf8', (err, data) => {
+fs.readFile(configFile, 'utf8', (err, data) => {
   const config = JSON.parse(data);
 
   var server = app.listen(config.serverPort, () => {

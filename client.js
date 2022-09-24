@@ -1,10 +1,9 @@
 const fs = require('fs');
 const fetch = require('node-fetch');
 const dictionary = require('./dict-solutions.js');
-
-require('./extensions.js');
 const solve = require('./solve.js');
 const best = require('./best.js');
+require('./extensions.js');
 
 const configFile = "config-client.json";
 

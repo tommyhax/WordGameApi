@@ -12,7 +12,7 @@ const score = (guess, target, greenValue = GreenValue, yellowValue = YellowValue
     , 0);
 }
 
-const best = (results) => {
+const suggest = (results) => {
   function rank (words) {
     var scores = [];
 
@@ -32,4 +32,4 @@ const best = (results) => {
   .filter(w => w !== undefined);
 };
 
-module.exports = best;
+module.exports = suggest;

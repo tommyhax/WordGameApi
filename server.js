@@ -1,52 +1,21 @@
 const express = require('express');
 const uuid = require('uuid');
 const fs = require('fs');
-const evaluate = require('./evaluate.js');
+const apidoc = require('./apidoc.js');
 const solutionWords = require('./dict-solutions.js');
 const otherWords = require('./dict-others.js');
+const results = require('./results.js');
 
 const configFile = 'config-server.json';
 
 const validWords = solutionWords.concat(otherWords);
-
-const gameSolution = (game) => solutionWords[parseInt(game.split(/-/)[4], 16) % solutionWords.length];
 
 const log = (req) => console.log(`${new Date()} - ${req.headers['x-forwarded-for'] || req.socket.remoteAddress} - ${req.originalUrl}`);
 
 const app = express();
 
 app.get('/', (req, res) => {
-  log(req);
-
-  res.send({
-    endpoints: [
-      {
-        path: "/",
-        method: "GET",
-        parameters: null,
-        description: "List API endpoints."
-      },
-      {
-        path: "/play",
-        method: "GET",
-        parameters: [
-          {
-            name: "guess",
-            type: "string",
-            required: "true",
-            description: "A five-letter guess at the puzzle solution."
-          },
-          {
-            name: "game",
-            type: "UUID",
-            required: "false",
-            description: "The ID of a game in progress.  If omitted, a new game will be started."
-          }
-        ],
-        description: "Start a new game or submit a guess to a game in progress."
-      }
-    ]
-  });
+  res.send(apidoc);
 });
 
 app.get('/play', (req, res) => {
@@ -70,12 +39,12 @@ app.get('/play', (req, res) => {
 
   guess = guess.toUpperCase();
 
-  const solution = gameSolution(game);
+  const solution = solutionWords[parseInt(game.split(/-/)[4], 16) % solutionWords.length];
 
   res.send({
     game: game,
     guess: guess,
-    results: evaluate(solution, guess)
+    results: results(solution, guess)
   });
 });
 

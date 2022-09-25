@@ -2,12 +2,12 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const dictionary = require('./dict-solutions.js');
 const solve = require('./solve.js');
-const best = require('./best.js');
+const suggest = require('./suggest.js');
 require('./extensions.js');
 
 const configFile = "config-client.json";
 
-const turn = (baseUri, green, yellow, gray, t = 0, jsonData = undefined) => {
+const play = (baseUri, green, yellow, gray, t = 0, jsonData = undefined) => {
   var game = undefined;
 
   if (jsonData) {
@@ -38,7 +38,7 @@ const turn = (baseUri, green, yellow, gray, t = 0, jsonData = undefined) => {
   }
 
   if (!green.includes('_')) {
-    console.log(`Found solution ${response.guess} on turn ${t}`);
+    console.log(`Found solution ${response.guess} on play ${t}`);
     return t;
   }
 
@@ -48,7 +48,7 @@ const turn = (baseUri, green, yellow, gray, t = 0, jsonData = undefined) => {
   }
 
   var solutions = solve(dictionary, green, yellow, gray);
-  var suggestions = best(solutions);
+  var suggestions = suggest(solutions);
   var guess = suggestions[0];
 
   console.log(`Guessing ${guess}`);
@@ -63,7 +63,7 @@ const turn = (baseUri, green, yellow, gray, t = 0, jsonData = undefined) => {
 
   fetch(uri)
     .then(res => res.text())
-    .then(jsonData => turn(baseUri, green, yellow, gray, t + 1, jsonData));
+    .then(jsonData => play(baseUri, green, yellow, gray, t + 1, jsonData));
 }
 
 fs.readFile(configFile, 'utf8', (err, data) => {
@@ -75,5 +75,5 @@ fs.readFile(configFile, 'utf8', (err, data) => {
   var yellow = [ '', '', '', '', '' ];
   var gray = '';
 
-  turn(baseUri, green, yellow, gray);
+  play(baseUri, green, yellow, gray);
 });
